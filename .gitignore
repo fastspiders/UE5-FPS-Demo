@@ -1,0 +1,20 @@
+# UE5 核心忽略规则（彻底避免权限问题）
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+Plugins/Marketplace/
+
+# Windows/VS 忽略规则
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+*.suo
+*.user
+
+# Git 相关
+.gitignore~
+.DS_Store
