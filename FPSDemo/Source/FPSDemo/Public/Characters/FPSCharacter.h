@@ -70,6 +70,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "FPS Character")
     void Respawn();
 
+    // 武器生成事件（蓝图调用）
+    UFUNCTION(BlueprintImplementableEvent, Category = "FPS Character Events")
+    void OnWeaponSpawned(AFPSWeapon* SpawnedWeapon);
+
 protected:
     /** 第一人称相机组件 */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPS Camera")

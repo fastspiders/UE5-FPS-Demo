@@ -9,6 +9,9 @@
 class UPointLightComponent;
 class UParticleSystemComponent;
 
+// 弹药变化委托声明
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int32, NewAmmo, int32, MaxAmmo);
+
 /**
  * FPS武器基类
  * 实现基础射击、弹药管理和伤害计算
@@ -102,6 +105,11 @@ protected:
 
     /** 射击冷却时间 */
     float FireCooldown;
+
+public:
+    // 弹药变化委托
+    UPROPERTY(BlueprintAssignable, Category = "FPS Weapon Events")
+    FOnAmmoChanged OnAmmoChanged;
 
 public:
     // 设置武器持有者

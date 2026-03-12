@@ -190,5 +190,8 @@ void AFPSCharacter::SpawnDefaultWeapon()
         CurrentWeapon->SetOwningCharacter(this);
         // 将武器附加到 Mesh1P 的 WeaponSocket（在 ik_hand_r 上创建的插槽）
         CurrentWeapon->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket"));
+        
+        // 触发武器生成事件，通知蓝图绑定委托
+        OnWeaponSpawned(CurrentWeapon);
     }
 }

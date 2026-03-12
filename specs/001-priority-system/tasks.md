@@ -124,9 +124,9 @@
 - [x] T048 [US3] Implement Die() function with death state management
 - [x] T049 [US3] Add Respawn() function with spawn point logic
 - [x] T050 [US3] Configure collision channels (Pawn, Visibility, Camera, WorldDynamic)
-- [ ] T051 [US3] Create BP_Pickup_Health blueprint in Content/Blueprints/Pickups/
-- [ ] T052 [US3] Create BP_Pickup_Ammo blueprint in Content/Blueprints/Pickups/
-- [ ] T053 [US3] Add health/ammo visual indicators to HUD
+- [x] T051 [US3] Create BP_Pickup_Health blueprint in Content/Blueprints/Pickups/ ✅ 2026-03-11
+- [x] T052 [US3] Create BP_Pickup_Ammo blueprint in Content/Blueprints/Pickups/ ✅ 2026-03-11
+- [x] T053 [US3] Add health/ammo visual indicators to HUD ✅ 2026-03-11
 - [ ] T054 [US3] Configure respawn points in TestMap
 - [ ] T055 [US3] Add death and respawn sound effects
 

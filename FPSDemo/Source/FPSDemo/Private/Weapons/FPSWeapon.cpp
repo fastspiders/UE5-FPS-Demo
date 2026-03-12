@@ -98,6 +98,9 @@ void AFPSWeapon::Reload()
     {
         CurrentAmmo = MaxAmmo;
         UE_LOG(LogTemp, Log, TEXT("Weapon reloaded! Ammo: %d/%d"), CurrentAmmo, MaxAmmo);
+        
+        // 触发弹药变化事件
+        OnAmmoChanged.Broadcast(CurrentAmmo, MaxAmmo);
     }
 }
 
@@ -113,6 +116,9 @@ void AFPSWeapon::AddAmmo(int32 AmmoAmount)
     
     UE_LOG(LogTemp, Log, TEXT("Weapon ammo added: %d -> %d (+%d)"), 
            OldAmmo, CurrentAmmo, AmmoAmount);
+    
+    // 触发弹药变化事件
+    OnAmmoChanged.Broadcast(CurrentAmmo, MaxAmmo);
 }
 
 bool AFPSWeapon::CanFire() const
@@ -241,5 +247,12 @@ void AFPSWeapon::PlayCameraShake()
 
 void AFPSWeapon::ConsumeAmmo()
 {
+    int32 OldAmmo = CurrentAmmo;
     CurrentAmmo = FMath::Max(0, CurrentAmmo - 1);
+    
+    // 只在弹药实际变化时触发事件
+    if (OldAmmo != CurrentAmmo)
+    {
+        OnAmmoChanged.Broadcast(CurrentAmmo, MaxAmmo);
+    }
 }
