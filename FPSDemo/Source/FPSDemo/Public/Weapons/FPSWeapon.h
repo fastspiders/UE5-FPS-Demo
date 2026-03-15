@@ -115,6 +115,10 @@ public:
     // 设置武器持有者
     UFUNCTION(BlueprintCallable, Category = "FPS Weapon")
     void SetOwningCharacter(class AFPSCharacter* Character) { OwningCharacter = Character; }
+    
+    // 获取武器持有者
+    UFUNCTION(BlueprintPure, Category = "FPS Weapon")
+    AFPSCharacter* GetOwningCharacter() const { return OwningCharacter; }
 
 protected:
     /** 武器持有者 */

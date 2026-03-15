@@ -2,6 +2,7 @@
 
 #include "Interactions/FPSInteractionComponent.h"
 #include "Characters/FPSCharacter.h"
+#include "Weapons/FPSWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
 
@@ -36,16 +37,20 @@ void UFPSInteractionComponent::Interact()
         // 执行交互逻辑
         UE_LOG(LogTemp, Log, TEXT("Interacting with: %s"), *CurrentInteractable->GetName());
 
-        // 这里可以调用交互对象的接口或事件
-        // 例如：拾取物品、打开门、触发机关等
-
-        // 示例：如果是武器，拾取武器
-        // AFPSWeapon* Weapon = Cast<AFPSWeapon>(CurrentInteractable);
-        // if (Weapon)
-        // {
-        //     // 拾取武器逻辑
-        // }
-
+        // 检查是否是武器
+        AFPSWeapon* Weapon = Cast<AFPSWeapon>(CurrentInteractable);
+        if (Weapon)
+        {
+            // 获取角色
+            AFPSCharacter* Character = Cast<AFPSCharacter>(GetOwner());
+            if (Character)
+            {
+                // 拾取武器
+                Character->EquipWeapon(Weapon);
+                UE_LOG(LogTemp, Log, TEXT("Weapon picked up: %s"), *Weapon->GetName());
+            }
+        }
+        
         // 交互后清除当前可交互对象
         CurrentInteractable = nullptr;
     }
@@ -102,6 +107,20 @@ void UFPSInteractionComponent::CheckForInteractables()
             AActor* HitActor = Hit.GetActor();
             if (HitActor && HitActor != GetOwner())
             {
+                // 检查是否是角色当前持有的武器，如果是则忽略
+                AFPSWeapon* CurrentWeapon = Character->GetCurrentWeapon();
+                if (CurrentWeapon && HitActor == CurrentWeapon)
+                {
+                    continue;
+                }
+                
+                // 检查是否是已被其他角色持有的武器，如果是则忽略
+                AFPSWeapon* HitWeapon = Cast<AFPSWeapon>(HitActor);
+                if (HitWeapon && HitWeapon->GetOwningCharacter())
+                {
+                    continue;
+                }
+                
                 // 检查Actor是否有交互标签或接口
                 // 这里简化处理，任何非所有者Actor都可交互
                 NewInteractable = HitActor;

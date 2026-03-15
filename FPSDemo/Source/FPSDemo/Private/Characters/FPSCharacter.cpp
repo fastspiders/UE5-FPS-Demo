@@ -3,11 +3,14 @@
 #include "Characters/FPSCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interactions/FPSHealthComponent.h"
 #include "Interactions/FPSInteractionComponent.h"
 #include "Weapons/FPSWeapon.h"
+#include "PhysicsEngine/BodyInstance.h"
 
 AFPSCharacter::AFPSCharacter()
 {
@@ -134,17 +137,19 @@ void AFPSCharacter::Interact()
     }
 }
 
-void AFPSCharacter::TakeDamage(float DamageAmount)
+float AFPSCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
     if (bIsDead || DamageAmount <= 0.0f)
     {
-        return;
+        return 0.0f;
     }
 
     if (HealthComponent)
     {
         HealthComponent->TakeDamage(DamageAmount);
     }
+
+    return DamageAmount;
 }
 
 void AFPSCharacter::Die()
@@ -194,4 +199,43 @@ void AFPSCharacter::SpawnDefaultWeapon()
         // 触发武器生成事件，通知蓝图绑定委托
         OnWeaponSpawned(CurrentWeapon);
     }
+}
+
+void AFPSCharacter::EquipWeapon(AFPSWeapon* Weapon)
+{
+    if (!Weapon || bIsDead)
+    {
+        return;
+    }
+
+    // 卸下当前武器
+    if (CurrentWeapon)
+    {
+        // 可以选择将武器丢弃到世界中，或者直接销毁
+        CurrentWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        CurrentWeapon->SetOwningCharacter(nullptr);
+        
+        // 销毁旧武器，使其从世界中消失
+        CurrentWeapon->Destroy();
+    }
+
+    // 装备新武器
+    CurrentWeapon = Weapon;
+    CurrentWeapon->SetOwningCharacter(this);
+    CurrentWeapon->AttachToComponent(Mesh1P, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket"));
+    
+    // 禁用武器的碰撞，防止被再次检测到
+    if (CurrentWeapon->GetRootComponent())
+    {
+        UPrimitiveComponent* RootPrimitive = Cast<UPrimitiveComponent>(CurrentWeapon->GetRootComponent());
+        if (RootPrimitive)
+        {
+            RootPrimitive->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        }
+    }
+    
+    // 触发武器生成事件，通知蓝图绑定委托
+    OnWeaponSpawned(CurrentWeapon);
+    
+    UE_LOG(LogTemp, Log, TEXT("Equipped weapon: %s"), *Weapon->GetName());
 }

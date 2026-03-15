@@ -196,16 +196,7 @@ void AFPSWeapon::ApplyDamage(AActor* HitActor, const FHitResult& HitResult)
         return;
     }
 
-    // 尝试对角色应用伤害
-    AFPSCharacter* HitCharacter = Cast<AFPSCharacter>(HitActor);
-    if (HitCharacter)
-    {
-        HitCharacter->TakeDamage(Damage);
-        UE_LOG(LogTemp, Log, TEXT("Hit character: %s - Damage: %.1f"), *HitCharacter->GetName(), Damage);
-        return;
-    }
-
-    // 对其他任何 Actor 应用通用伤害
+    // 对所有 Actor 应用通用伤害，包括角色
     // 这会触发 Actor 的 Event AnyDamage 事件
     AController* InstigatorController = GetInstigatorController();
     UGameplayStatics::ApplyDamage(

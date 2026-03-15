@@ -60,7 +60,7 @@ public:
 
     // 受到伤害
     UFUNCTION(BlueprintCallable, Category = "FPS Character")
-    void TakeDamage(float DamageAmount);
+    virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
     // 死亡处理
     UFUNCTION(BlueprintCallable, Category = "FPS Character")
@@ -126,4 +126,8 @@ public:
     // 检查是否死亡
     UFUNCTION(BlueprintPure, Category = "FPS Character")
     bool IsDead() const { return bIsDead; }
+
+    // 装备武器
+    UFUNCTION(BlueprintCallable, Category = "FPS Character")
+    void EquipWeapon(class AFPSWeapon* Weapon);
 };
